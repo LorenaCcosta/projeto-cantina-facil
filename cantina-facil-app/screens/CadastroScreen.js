@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Linking } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-import { cadastrarUsuario } from "../firebase/auth/authService";
+import { cadastrarUsuario } from "../../firebase/auth/authService";
 
 export default function CadastroScreen() {
   const navigation = useNavigation();
@@ -28,7 +28,7 @@ export default function CadastroScreen() {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.voltar}>
-        <Text style={styles.voltarTexto}>←</Text>
+        <Image source={require("../../assets/seta.png")} style={styles.voltarTexto}/>
       </TouchableOpacity>
 
       <Text style={styles.titulo}>Crie uma conta</Text>
