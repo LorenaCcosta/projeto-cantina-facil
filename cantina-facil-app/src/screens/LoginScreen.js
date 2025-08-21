@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { loginUsuario } from "../firebase/auth/authService";
+import { loginUsuario } from "../../firebase/auth/authService";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
@@ -20,11 +22,11 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/logo.png")} style={styles.logo} />
+      <Image source={require("../../assets/logo.png")} style={styles.logo} />
 
       <Text style={styles.titulo}>Login</Text>
 
-      <Text>E-mail</Text>
+      <Text style={styles.textEmail}>E-mail</Text>
       <TextInput
         placeholder="E-mail"
         value={email}
@@ -33,14 +35,19 @@ export default function LoginScreen() {
         keyboardType="email-address"
       />
 
-      <Text>Senha</Text>
+      <Text style={styles.textSenha}>Senha</Text>
       <TextInput
         placeholder="Senha"
         value={senha}
         onChangeText={setSenha}
-        style={styles.input}
-        secureTextEntry
+        style={[styles.input, styles.inputSenha]}
+      
+        secureTextEntry={!mostrarSenha}
       />
+
+      <TouchableOpacity style={styles.iconEye} onPress={() => setMostrarSenha(!mostrarSenha)}>
+        <Icon name={mostrarSenha ? 'visibility': 'visibility-off'} size={24}/>
+      </TouchableOpacity>
 
       <TouchableOpacity>
         <Text style={styles.esqueci}>Esqueceu sua senha?</Text>
@@ -71,15 +78,17 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
-  logo: { width: 150, height: 150, alignSelf: "center", marginBottom: 15 },
+  container: { flex: 1, padding: 20, backgroundColor: "#fff"},
+  logo: { width: 150, height: 150, alignSelf: "center", marginBottom: 14, marginTop: 28
+   },
   titulo: { fontSize: 28, fontWeight: "500", textAlign: "center", marginBottom: 36 },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#9F9F9F",
     borderRadius: 8,
     padding: 12,
-    marginBottom: 10
+    marginBottom: 10,
+    marginBottom: 20,
   },
   esqueci: { color: "blue", textAlign: "center", marginBottom: 42 },
   botaoAmarelo: {
@@ -110,5 +119,25 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: "center"
   },
-  botaoTextoBorda: { fontWeight: "500", fontSize: 18 }
+  botaoTextoBorda: { fontWeight: "500", fontSize: 18 },
+
+  textEmail: {
+    marginLeft: 8,
+    marginBottom: 4
+  },
+
+  textSenha: {
+    marginLeft: 8,
+    marginBottom: 4
+  },
+
+  iconEye: {
+    position: 'absolute',
+    top: '55%',
+    marginLeft: '93%',
+  }, 
+
+  inputSenha: {
+    paddingRight: 54
+  }
 });
