@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Linking,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { cadastrarUsuario } from "../../firebase/auth/authService";
@@ -46,16 +47,6 @@ export default function CadastroScreen() {
       temErro = true;
     }
 
-    if (!email.trim()) {
-      setErroEmail("O e-mail é obrigatório.");
-      temErro = true;
-    }
-
-    if (!senha || senha.length < 6) {
-      setErroSenha("A senha deve ter pelo menos 6 caracteres.");
-      temErro = true;
-    }
-
     if (senha !== confirmarSenha) {
       setErroConfirmarSenha("As senhas não coincidem.");
       temErro = true;
@@ -70,9 +61,13 @@ export default function CadastroScreen() {
 
     setCarregandoCadastro(true);
     try {
-      const resultado = await cadastrarUsuario(email, senha, nome);
-      if (resultado) {
+      const cadastro = await cadastrarUsuario(email, senha, nome);
+      if (cadastro) {
         navigation.navigate("Login");
+        Alert.alert(
+          "Cadastro Realizado!",
+          "Verifique seu e-mail para ativar a conta em sua caixa de entrada ou a pasta de spam."
+        );
       }
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
@@ -80,9 +75,15 @@ export default function CadastroScreen() {
       } else if (error.code === "auth/invalid-email") {
         setErroEmail("E-mail inválido.");
       } else if (error.code === "auth/weak-password") {
-        setErroSenha("Senha fraca. Use pelo menos 6 caracteres.");
+        setErroSenha("Senha fraca, use pelo menos 6 caracteres.");
+      } else if (error.code === "auth/missing-password") {
+        setErroSenha("A senha é obrigatória.");
+      } else if (error.code === "auth/missing-email") {
+        setErroEmail("O e-mail é obrigatório.");
+      } else if (error.code === "auth/network-request-failed") {
+        Alert.alert("Falha na conexão", "Verifique sua internet.");
       } else {
-        setErroEmail("Erro ao cadastrar. Tente novamente.");
+        Alert.alert("Erro ao cadastrar", "Tente novamente.");
       }
     } finally {
       setCarregandoCadastro(false);
@@ -98,10 +99,11 @@ export default function CadastroScreen() {
 
       <Text style={styles.text_input}>Nome*</Text>
       <TextInput
-        placeholder="Nome*"
+        placeholder="Somente seu primeiro nome*"
         value={nome}
         onChangeText={setNome}
         style={styles.input}
+        maxLength={12}
       />
       {erroNome ? <Text style={styles.erro}>{erroNome}</Text> : null}
 
@@ -122,7 +124,7 @@ export default function CadastroScreen() {
           placeholder="Senha*"
           value={senha}
           onChangeText={setSenha}
-          style={styles.input}
+          style={[styles.input, styles.inputSenha]}
           secureTextEntry={!mostrarSenha}
         />
         <TouchableOpacity
@@ -143,7 +145,7 @@ export default function CadastroScreen() {
           placeholder="Confirmar senha*"
           value={confirmarSenha}
           onChangeText={setConfirmarSenha}
-          style={styles.input}
+          style={[styles.input, styles.inputSenha]}
           secureTextEntry={!mostrarConfirmaSenha}
         />
         <TouchableOpacity
@@ -160,11 +162,9 @@ export default function CadastroScreen() {
         <Text style={styles.erro}>{erroConfirmarSenha}</Text>
       ) : null}
 
-      <TouchableOpacity
-        onPress={() => setAceito(!aceito)}
-        style={styles.checkboxContainer}
-      >
+      <View style={styles.checkboxContainer}>
         <Icon
+          onPress={() => setAceito(!aceito)}
           name={aceito ? "check-box" : "check-box-outline-blank"}
           size={24}
           color={"#0026ff"}
@@ -179,15 +179,20 @@ export default function CadastroScreen() {
             Termo de Uso e Política de Privacidade
           </Text>
         </Text>
-      </TouchableOpacity>
+      </View>
       {erroTermos ? (
         <Text style={[styles.erro, styles.erroTermos]}>{erroTermos}</Text>
       ) : null}
 
       <TouchableOpacity
-        style={[styles.botao, carregandoCadastro && { opacity: 0.5 }]}
+        style={[
+          styles.botao,
+          (!email.trim() || !senha || confirmarSenha != senha || !aceito) && {
+            opacity: 0.5,
+          },
+        ]}
         onPress={handleCadastrar}
-        disabled={carregandoCadastro}
+        disabled={!email.trim() || !senha || carregandoCadastro}
       >
         {carregandoCadastro ? (
           <ActivityIndicator color="#000" />
@@ -257,4 +262,6 @@ const styles = StyleSheet.create({
   text_input: { marginLeft: 8, marginBottom: -16, marginTop: 22 },
 
   erroTermos: { marginLeft: 32 },
+
+  inputSenha: { paddingRight: 54 },
 });

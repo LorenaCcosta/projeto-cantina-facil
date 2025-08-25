@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Image,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { loginUsuario } from "../../firebase/auth/authService";
@@ -17,18 +18,30 @@ export default function LoginScreen() {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [carregando, setCarregando] = useState(false);
+  const [carregandoLogin, setCarregandoLogin] = useState(false);
+  const [erroLogin, setErroLogin] = useState("");
 
   const handleLogin = async () => {
-    if (!email.trim()) return alert("Preencha o e-mail.");
-    if (!senha) return alert("Preencha a senha.");
+    setCarregandoLogin(true);
+    setErroLogin("");
 
-    setCarregando(true);
     try {
-      const usuario = await loginUsuario(email, senha);
-      if (usuario) navigation.navigate("Home");
+      const login = await loginUsuario(email, senha);
+      if (login) navigation.navigate("Home");
+    } catch (error) {
+      if (error.code === "auth/user-disabled") {
+        Alert.alert("Usuário desativado", "Entre em contato com o suporte.");
+      } else if (error.code === "auth/network-request-failed") {
+        Alert.alert("Erro de rede", "Verifique sua conexão.");
+      } else if (error.code === "auth/invalid-credential") {
+        setErroLogin("E-mail ou senha incorreta.");
+      } else if (error.code === "auth/invalid-email") {
+        setErroLogin("E-mail inválido.");
+      } else {
+        setErroLogin("Erro ao fazer login. Tente novamente.");
+      }
     } finally {
-      setCarregando(false);
+      setCarregandoLogin(false);
     }
   };
 
@@ -62,22 +75,32 @@ export default function LoginScreen() {
         <Icon name={mostrarSenha ? "visibility" : "visibility-off"} size={24} />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("RecuperarSenha")}>
-        <Text style={styles.esqueciSenha}>Esqueceu sua senha?</Text>
-      </TouchableOpacity>
+      {erroLogin ? <Text style={styles.erroLogin}>{erroLogin}</Text> : null}
+
+      {/* <TouchableOpacity
+        onPress={() => navigation.navigate("RecuperarSenha")}
+        style={styles.esqueciSenha_touch}
+      > */}
+      <Text
+        onPress={() => navigation.navigate("RecuperarSenha")}
+        style={styles.esqueciSenha}
+      >
+        Esqueceu sua senha?
+      </Text>
+      {/* </TouchableOpacity> */}
 
       <TouchableOpacity
         style={[
-          styles.botaoAmarelo,
+          styles.buttonAmarelo,
           (!email.trim() || !senha) && { opacity: 0.5 },
         ]}
         onPress={handleLogin}
-        disabled={!email.trim() || !senha || carregando}
+        disabled={!email.trim() || !senha || carregandoLogin}
       >
-        {carregando ? (
+        {carregandoLogin ? (
           <ActivityIndicator color="#000" />
         ) : (
-          <Text style={styles.botaoTextoPreto}>Entrar</Text>
+          <Text style={styles.buttonTextPreto}>Entrar</Text>
         )}
       </TouchableOpacity>
 
@@ -92,10 +115,10 @@ export default function LoginScreen() {
       </Text>
 
       <TouchableOpacity
-        style={styles.botaoBorda}
+        style={styles.buttonBorda}
         onPress={() => navigation.navigate("Cadastro")}
       >
-        <Text style={styles.botaoTextoBorda}>Criar conta</Text>
+        <Text style={styles.buttonTextBorda}>Criar conta</Text>
       </TouchableOpacity>
     </View>
   );
@@ -114,7 +137,13 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "500",
     textAlign: "center",
-    marginBottom: 30,
+    marginBottom: 20,
+  },
+  erroLogin: {
+    color: "red",
+    fontSize: 13,
+    marginBottom: 24,
+    marginTop: -18,
   },
   input: {
     borderWidth: 1,
@@ -123,21 +152,32 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 20,
   },
+  inputSenha: {
+    paddingRight: 54,
+  },
+  textEmail: { marginLeft: 8, marginBottom: 4 },
+  textSenha: { marginLeft: 8, marginBottom: 4 },
+  iconEye: {
+    position: "absolute",
+    top: "52.5%",
+    marginLeft: "93%",
+  },
   esqueciSenha: {
     color: "blue",
     textAlign: "left",
     marginBottom: 42,
     textDecorationLine: "underline",
     marginTop: -10,
+    width: 140,
   },
-  botaoAmarelo: {
+  buttonAmarelo: {
     backgroundColor: "#FFc72c",
     borderRadius: 8,
     padding: 10,
     alignItems: "center",
     marginBottom: 15,
   },
-  botaoTextoPreto: { fontWeight: "500", fontSize: 18 },
+  buttonTextPreto: { fontWeight: "500", fontSize: 18 },
   divisao: {
     flexDirection: "row",
     alignItems: "center",
@@ -151,22 +191,12 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "#ccc",
   },
-  botaoBorda: {
+  buttonBorda: {
     borderWidth: 1,
     borderColor: "#000",
     borderRadius: 8,
     padding: 10,
     alignItems: "center",
   },
-  botaoTextoBorda: { fontWeight: "500", fontSize: 18 },
-  textEmail: { marginLeft: 8, marginBottom: 4 },
-  textSenha: { marginLeft: 8, marginBottom: 4 },
-  iconEye: {
-    position: "absolute",
-    top: "54%",
-    marginLeft: "93%",
-  },
-  inputSenha: {
-    paddingRight: 54,
-  },
+  buttonTextBorda: { fontWeight: "500", fontSize: 18 },
 });
