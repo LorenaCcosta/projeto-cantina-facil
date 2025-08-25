@@ -170,7 +170,7 @@ export default function CadastroScreen() {
           color={"#0026ff"}
           style={styles.checkboxEmoji}
         />
-        <Text style={styles.termoTexto}>
+        <Text style={styles.termoTex}>
           Li e estou de acordo com o{" "}
           <Text
             style={styles.link}
@@ -186,7 +186,7 @@ export default function CadastroScreen() {
 
       <TouchableOpacity
         style={[
-          styles.botao,
+          styles.button,
           (!email.trim() || !senha || confirmarSenha != senha || !aceito) && {
             opacity: 0.5,
           },
@@ -197,7 +197,7 @@ export default function CadastroScreen() {
         {carregandoCadastro ? (
           <ActivityIndicator color="#000" />
         ) : (
-          <Text style={styles.botaoTexto}>Cadastrar</Text>
+          <Text style={styles.buttonText}>Cadastrar</Text>
         )}
       </TouchableOpacity>
     </View>
@@ -245,19 +245,19 @@ const styles = StyleSheet.create({
     fontSize: 22,
     marginRight: 10,
   },
-  termoTexto: {
+  termoText: {
     flex: 1,
     flexWrap: "wrap",
   },
   link: { color: "blue", textDecorationLine: "underline" },
-  botao: {
+  button: {
     backgroundColor: "#FFc72c",
     borderRadius: 8,
     padding: 10,
     alignItems: "center",
     marginTop: 42,
   },
-  botaoTexto: { fontWeight: "500", fontSize: 18 },
+  buttonText: { fontSize: 18 },
 
   text_input: { marginLeft: 8, marginBottom: -16, marginTop: 22 },
 

@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 15,
   },
-  buttonTextPreto: { fontWeight: "500", fontSize: 18 },
+  buttonTextPreto: { fontSize: 18 },
   divisao: {
     flexDirection: "row",
     alignItems: "center",
@@ -198,5 +198,5 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: "center",
   },
-  buttonTextBorda: { fontWeight: "500", fontSize: 18 },
+  buttonTextBorda: { fontSize: 18 },
 });
