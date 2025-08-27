@@ -28,7 +28,11 @@ export default function App() {
             component={CadastroScreen}
             options={{ headerShown: false }}
           />
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="RecuperarSenha"
             component={RecuperarSenhaScreen}
