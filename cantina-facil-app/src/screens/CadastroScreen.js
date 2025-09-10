@@ -170,7 +170,7 @@ export default function CadastroScreen() {
           color={"#0026ff"}
           style={styles.checkboxEmoji}
         />
-        <Text style={styles.termoTex}>
+        <Text style={styles.termoText}>
           Li e estou de acordo com o{" "}
           <Text
             style={styles.link}
@@ -249,13 +249,14 @@ const styles = StyleSheet.create({
     flex: 1,
     flexWrap: "wrap",
   },
-  link: { color: "blue", textDecorationLine: "underline" },
+  link: { color: "blue", textDecorationLine: "underline",},
   button: {
     backgroundColor: "#FFc72c",
     borderRadius: 8,
     padding: 10,
     alignItems: "center",
     marginTop: 42,
+  
   },
   buttonText: { fontSize: 18 },
 
