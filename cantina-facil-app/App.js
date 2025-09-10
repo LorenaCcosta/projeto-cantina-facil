@@ -30,7 +30,7 @@ export default function App() {
     <CartProvider>
       <NavigationContainer>
         <SafeAreaView style={{ flex: 1 }} edges={["top", "right", "left", "bottom"]}>
-          <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+          <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Cadastro" component={CadastroScreen} />
