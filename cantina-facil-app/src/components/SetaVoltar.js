@@ -1,5 +1,12 @@
-import Icon from "react-native-vector-icons/MaterialIcons";
+// src/components/SetaVoltar.js
+import React from "react";
+import { TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function SetaVoltar({ onPress }) {
-  return <Icon name="arrow-back" size={30} onPress={onPress} />;
+export default function SetaVoltar({ onPress, style }) {
+  return (
+    <TouchableOpacity onPress={onPress} >
+      <Ionicons name="arrow-back" size={28} color="#000" />
+    </TouchableOpacity>
+  );
 }

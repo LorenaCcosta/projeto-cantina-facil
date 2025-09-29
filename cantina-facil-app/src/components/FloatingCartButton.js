@@ -1,68 +1,65 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Platform } from "react-native";
+import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { useCart } from "./CartContext";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
-export default function FloatingCartButton({ offsetBottom = 16, offsetRight = 20 }) {
+// Se você alterar a altura lá no AppTabs, atualize aqui também:
+const TAB_BAR_HEIGHT = 60;
+
+export default function FloatingCartButton() {
   const navigation = useNavigation();
-  const tabBarHeight = useBottomTabBarHeight?.() ?? 0; // funciona c/ ou sem tabs
-  const { count } = useCart();
+  const insets = useSafeAreaInsets();
+  const route = useRoute();
+
+  // Heurística simples: quando estamos dentro das Tabs, o nome da rota raiz costuma ser "Tabs"
+  // e as rotas internas têm nomes das telas de aba ("Início", "Busca" ...).
+  // Se preferir algo 100% explícito, passe uma prop pelo withCartFab.
+  const isInsideTabs =
+    route?.name === "Tabs" ||
+    route?.name === "Início" ||
+    route?.name === "Busca" ||
+    route?.name === "Carteira" ||
+    route?.name === "Pedidos" ||
+    route?.name === "Perfil";
+
+  const extraBottom = isInsideTabs ? TAB_BAR_HEIGHT : 0;
+  const bottom = insets.bottom + extraBottom + 16;
 
   return (
-    <TouchableOpacity
-      accessibilityRole="button"
-      accessibilityLabel="Abrir carrinho"
-      activeOpacity={0.9}
-      onPress={() => navigation.navigate("Carrinho")}
-      style={[
-        styles.fab,
-        { right: offsetRight, bottom: tabBarHeight ? tabBarHeight + offsetBottom : offsetBottom + 8 },
-      ]}
-    >
-      <Ionicons name="cart-outline" size={26} color="#fff" />
-      {count > 0 && (
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{count}</Text>
-        </View>
-      )}
-    </TouchableOpacity>
+    <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Carrinho")}
+        activeOpacity={0.9}
+        style={[styles.fab, { bottom }]}
+      >
+        <Ionicons name="cart" size={30} color="#fff" />
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   fab: {
     position: "absolute",
-    width: 56,
+    right: 16,
+    // bottom definido dinamicamente
+    backgroundColor: "#FFA600",
+    borderRadius: 50,
     height: 56,
-    borderRadius: 28,
-    backgroundColor: "#FFC107",
+    width: 56,
     alignItems: "center",
     justifyContent: "center",
-    elevation: 6,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.25,
-        shadowRadius: 6,
-      },
-    }),
+    flexDirection: "row",
+    gap: 8,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
   },
-  badge: {
-    position: "absolute",
-    top: -6,
-    right: -6,
-    minWidth: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 4,
-    borderWidth: 2,
-    borderColor: "#FFC107",
+  fabText: {
+    fontWeight: "700",
+    color: "#000",
   },
-  badgeText: { fontWeight: "700", color: "#333", fontSize: 12 },
 });

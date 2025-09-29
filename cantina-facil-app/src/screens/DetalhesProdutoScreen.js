@@ -5,11 +5,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { useCart } from "../components/CartContext";
 
 export default function DetalheProduto({ route, navigation }) {
-  const { produto } = route.params; // veio do navigate
-  const { addItem, count } = useCart();
+  const { produto } = route.params; 
+  const { addItem } = useCart();
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}
+    >
       {/* Imagem grande */}
       <Image source={{ uri: produto.imagemUrl }} style={styles.img} />
 
@@ -40,25 +41,13 @@ export default function DetalheProduto({ route, navigation }) {
         </TouchableOpacity>
       </ScrollView>
 
-      {/* Botão flutuante do carrinho */}
-      <TouchableOpacity
-        style={styles.cartFab}
-        onPress={() => navigation.navigate("Carrinho")}
-      >
-        <Ionicons name="cart-outline" size={26} color="#fff" />
-        {count > 0 && (
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{count}</Text>
-          </View>
-        )}
-      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   img: { width: "100%", height: 200 },
-  backBtn: { position: "absolute", top: 40, left: 16, backgroundColor:"#fff", borderRadius:20, padding:6 },
+  backBtn: { position: "absolute", top: 20, left: 16, backgroundColor:"#fff", borderRadius:20, padding:6 },
   nome: { fontSize: 20, fontWeight: "bold", marginBottom: 12 },
   label: { fontSize: 14, fontWeight: "600", marginTop: 8 },
   descricao: { fontSize: 14, color: "#555", marginTop: 4 },

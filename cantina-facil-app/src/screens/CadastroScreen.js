@@ -8,6 +8,9 @@ import {
   Linking,
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { cadastrarUsuario } from "../../firebase/auth/authService";
@@ -91,121 +94,129 @@ export default function CadastroScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <SetaVoltar onPress={() => navigation.goBack()} />
-
-      <Text style={styles.titulo}>Crie uma conta</Text>
-      <Text style={styles.subtitulo}>Os campos em (*) são obrigatórios</Text>
-
-      <Text style={styles.text_input}>Nome*</Text>
-      <TextInput
-        placeholder="Somente seu primeiro nome*"
-        value={nome}
-        onChangeText={setNome}
-        style={styles.input}
-        maxLength={12}
-      />
-      {erroNome ? <Text style={styles.erro}>{erroNome}</Text> : null}
-
-      <Text style={styles.text_input}>E-mail*</Text>
-      <TextInput
-        placeholder="E-mail*"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      {erroEmail ? <Text style={styles.erro}>{erroEmail}</Text> : null}
-
-      <View style={styles.inputWrapper}>
-        <Text style={styles.text_input}>Senha*</Text>
-        <TextInput
-          placeholder="Senha*"
-          value={senha}
-          onChangeText={setSenha}
-          style={[styles.input, styles.inputSenha]}
-          secureTextEntry={!mostrarSenha}
-        />
-        <TouchableOpacity
-          style={styles.iconEye}
-          onPress={() => setMostrarSenha(!mostrarSenha)}
-        >
-          <Icon
-            name={mostrarSenha ? "visibility" : "visibility-off"}
-            size={24}
-          />
-        </TouchableOpacity>
-      </View>
-      {erroSenha ? <Text style={styles.erro}>{erroSenha}</Text> : null}
-
-      <View style={styles.inputWrapper}>
-        <Text style={styles.text_input}>Confirmar senha*</Text>
-        <TextInput
-          placeholder="Confirmar senha*"
-          value={confirmarSenha}
-          onChangeText={setConfirmarSenha}
-          style={[styles.input, styles.inputSenha]}
-          secureTextEntry={!mostrarConfirmaSenha}
-        />
-        <TouchableOpacity
-          style={styles.iconEye}
-          onPress={() => setMostrarConfirmaSenha(!mostrarConfirmaSenha)}
-        >
-          <Icon
-            name={mostrarConfirmaSenha ? "visibility" : "visibility-off"}
-            size={24}
-          />
-        </TouchableOpacity>
-      </View>
-      {erroConfirmarSenha ? (
-        <Text style={styles.erro}>{erroConfirmarSenha}</Text>
-      ) : null}
-
-      <View style={styles.checkboxContainer}>
-        <Icon
-          onPress={() => setAceito(!aceito)}
-          name={aceito ? "check-box" : "check-box-outline-blank"}
-          size={24}
-          color={"#0026ff"}
-          style={styles.checkboxEmoji}
-        />
-        <Text style={styles.termoText}>
-          Li e estou de acordo com o{" "}
-          <Text
-            style={styles.link}
-            onPress={() => Linking.openURL("https://example.com/politica")}
-          >
-            Termo de Uso e Política de Privacidade
-          </Text>
-        </Text>
-      </View>
-      {erroTermos ? (
-        <Text style={[styles.erro, styles.erroTermos]}>{erroTermos}</Text>
-      ) : null}
-
-      <TouchableOpacity
-        style={[
-          styles.button,
-          (!email.trim() || !senha || confirmarSenha != senha || !aceito) && {
-            opacity: 0.5,
-          },
-        ]}
-        onPress={handleCadastrar}
-        disabled={!email.trim() || !senha || carregandoCadastro}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={0}
+    >
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        {carregandoCadastro ? (
-          <ActivityIndicator color="#000" />
-        ) : (
-          <Text style={styles.buttonText}>Cadastrar</Text>
-        )}
-      </TouchableOpacity>
-    </View>
+        <SetaVoltar onPress={() => navigation.goBack()} />
+
+        <Text style={styles.titulo}>Crie uma conta</Text>
+        <Text style={styles.subtitulo}>Os campos em (*) são obrigatórios</Text>
+
+        <Text style={styles.text_input}>Nome*</Text>
+        <TextInput
+          placeholder="Somente seu primeiro nome*"
+          value={nome}
+          onChangeText={setNome}
+          style={styles.input}
+          maxLength={12}
+          returnKeyType="next"
+        />
+        {erroNome ? <Text style={styles.erro}>{erroNome}</Text> : null}
+
+        <Text style={styles.text_input}>E-mail*</Text>
+        <TextInput
+          placeholder="E-mail*"
+          value={email}
+          onChangeText={setEmail}
+          style={styles.input}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
+          returnKeyType="next"
+        />
+        {erroEmail ? <Text style={styles.erro}>{erroEmail}</Text> : null}
+
+        <View style={styles.inputWrapper}>
+          <Text style={styles.text_input}>Senha*</Text>
+          <TextInput
+            placeholder="Senha*"
+            value={senha}
+            onChangeText={setSenha}
+            style={[styles.input, styles.inputSenha]}
+            secureTextEntry={!mostrarSenha}
+            returnKeyType="next"
+          />
+          <TouchableOpacity
+            style={styles.iconEye}
+            onPress={() => setMostrarSenha(!mostrarSenha)}
+            accessibilityLabel={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+          >
+            <Icon name={mostrarSenha ? "visibility" : "visibility-off"} size={24} />
+          </TouchableOpacity>
+        </View>
+        {erroSenha ? <Text style={styles.erro}>{erroSenha}</Text> : null}
+
+        <View style={styles.inputWrapper}>
+          <Text style={styles.text_input}>Confirmar senha*</Text>
+          <TextInput
+            placeholder="Confirmar senha*"
+            value={confirmarSenha}
+            onChangeText={setConfirmarSenha}
+            style={[styles.input, styles.inputSenha]}
+            secureTextEntry={!mostrarConfirmaSenha}
+            returnKeyType="done"
+          />
+          <TouchableOpacity
+            style={styles.iconEye}
+            onPress={() => setMostrarConfirmaSenha(!mostrarConfirmaSenha)}
+            accessibilityLabel={
+              mostrarConfirmaSenha ? "Ocultar confirmação de senha" : "Mostrar confirmação de senha"
+            }
+          >
+            <Icon name={mostrarConfirmaSenha ? "visibility" : "visibility-off"} size={24} />
+          </TouchableOpacity>
+        </View>
+        {erroConfirmarSenha ? <Text style={styles.erro}>{erroConfirmarSenha}</Text> : null}
+
+        <View style={styles.checkboxContainer}>
+          <Icon
+            onPress={() => setAceito(!aceito)}
+            name={aceito ? "check-box" : "check-box-outline-blank"}
+            size={24}
+            color={"#0026ff"}
+            style={styles.checkboxEmoji}
+          />
+          <Text style={styles.termoText}>
+            Li e estou de acordo com o{" "}
+            <Text
+              style={styles.link}
+              onPress={() => Linking.openURL("https://example.com/politica")}
+            >
+              Termo de Uso e Política de Privacidade
+            </Text>
+          </Text>
+        </View>
+        {erroTermos ? <Text style={[styles.erro, styles.erroTermos]}>{erroTermos}</Text> : null}
+
+        <TouchableOpacity
+          style={[
+            styles.button,
+            (!email.trim() || !senha || confirmarSenha != senha || !aceito) && { opacity: 0.5 },
+          ]}
+          onPress={handleCadastrar}
+          disabled={!email.trim() || !senha || carregandoCadastro}
+        >
+          {carregandoCadastro ? (
+            <ActivityIndicator color="#000" />
+          ) : (
+            <Text style={styles.buttonText}>Cadastrar</Text>
+          )}
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+  // Usar flexGrow para o contentContainer do ScrollView
+  container: { flexGrow: 1, padding: 20, backgroundColor: "#fff" },
   titulo: {
     fontSize: 28,
     fontWeight: "500",
@@ -227,10 +238,11 @@ const styles = StyleSheet.create({
     padding: 12,
     marginTop: 20,
   },
+  // Ícone absoluto relative ao wrapper, evita % que quebram no ScrollView
   iconEye: {
     position: "absolute",
-    marginLeft: "88%",
-    top: 56,
+    right: 16,
+    top: 56, // alinhado ao input com marginTop 20 + padding
   },
   erro: {
     color: "red",
@@ -249,20 +261,16 @@ const styles = StyleSheet.create({
     flex: 1,
     flexWrap: "wrap",
   },
-  link: { color: "blue", textDecorationLine: "underline",},
+  link: { color: "blue", textDecorationLine: "underline" },
   button: {
     backgroundColor: "#FFc72c",
     borderRadius: 8,
     padding: 10,
     alignItems: "center",
     marginTop: 42,
-  
   },
   buttonText: { fontSize: 18 },
-
   text_input: { marginLeft: 8, marginBottom: -16, marginTop: 22 },
-
   erroTermos: { marginLeft: 32 },
-
   inputSenha: { paddingRight: 54 },
 });

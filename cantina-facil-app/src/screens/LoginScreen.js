@@ -8,6 +8,9 @@ import {
   Image,
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { loginUsuario } from "../../firebase/auth/authService";
@@ -27,7 +30,13 @@ export default function LoginScreen() {
 
     try {
       const login = await loginUsuario(email, senha);
-      if (login) navigation.navigate("Home");
+      if (login) {
+        // Reset para as abas e foca na aba "Início"
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Tabs", params: { screen: "Início" } }],
+        });
+      }
     } catch (error) {
       if (error.code === "auth/user-disabled") {
         Alert.alert("Usuário desativado", "Entre em contato com o suporte.");
@@ -46,86 +55,94 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Image source={require("../../assets/logo.png")} style={styles.logo} />
-      <Text style={styles.titulo}>Login</Text>
-
-      <Text style={styles.textEmail}>E-mail</Text>
-      <TextInput
-        placeholder="E-mail"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-        keyboardType="email-address"
-      />
-
-      <Text style={styles.textSenha}>Senha</Text>
-      <TextInput
-        placeholder="Senha"
-        value={senha}
-        onChangeText={setSenha}
-        style={[styles.input, styles.inputSenha]}
-        secureTextEntry={!mostrarSenha}
-      />
-
-      <TouchableOpacity
-        style={styles.iconEye}
-        onPress={() => setMostrarSenha(!mostrarSenha)}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={0}
+    >
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <Icon name={mostrarSenha ? "visibility" : "visibility-off"} size={24} />
-      </TouchableOpacity>
+        <Image source={require("../../assets/logo.png")} style={styles.logo} />
+        <Text style={styles.titulo}>Login</Text>
 
-      {erroLogin ? <Text style={styles.erroLogin}>{erroLogin}</Text> : null}
+        <Text style={styles.textEmail}>E-mail</Text>
+        <TextInput
+          placeholder="E-mail"
+          value={email}
+          onChangeText={setEmail}
+          style={styles.input}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
+          returnKeyType="next"
+        />
 
-      {/* <TouchableOpacity
-        onPress={() => navigation.navigate("RecuperarSenha")}
-        style={styles.esqueciSenha_touch}
-      > */}
-      <Text
-        onPress={() => navigation.navigate("RecuperarSenha")}
-        style={styles.esqueciSenha}
-      >
-        Esqueceu sua senha?
-      </Text>
-      {/* </TouchableOpacity> */}
+        <View style={styles.inputWrapper}>
+          <Text style={styles.textSenha}>Senha</Text>
+          <TextInput
+            placeholder="Senha"
+            value={senha}
+            onChangeText={setSenha}
+            style={[styles.input, styles.inputSenha]}
+            secureTextEntry={!mostrarSenha}
+            returnKeyType="done"
+          />
+          <TouchableOpacity
+            style={styles.iconEye}
+            onPress={() => setMostrarSenha(!mostrarSenha)}
+            accessibilityLabel={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+          >
+            <Icon name={mostrarSenha ? "visibility" : "visibility-off"} size={24} />
+          </TouchableOpacity>
+        </View>
 
-      <TouchableOpacity
-        style={[
-          styles.buttonAmarelo,
-          (!email.trim() || !senha) && { opacity: 0.5 },
-        ]}
-        onPress={handleLogin}
-        disabled={!email.trim() || !senha || carregandoLogin}
-      >
-        {carregandoLogin ? (
-          <ActivityIndicator color="#000" />
-        ) : (
-          <Text style={styles.buttonTextPreto}>Entrar</Text>
-        )}
-      </TouchableOpacity>
+        {erroLogin ? <Text style={styles.erroLogin}>{erroLogin}</Text> : null}
 
-      <View style={styles.divisao}>
-        <View style={styles.linha} />
-        <Text>Ou</Text>
-        <View style={styles.linha} />
-      </View>
+        <Text
+          onPress={() => navigation.navigate("RecuperarSenha")}
+          style={styles.esqueciSenha}
+        >
+          Esqueceu sua senha?
+        </Text>
 
-      <Text style={{ textAlign: "center", marginBottom: 8 }}>
-        Não tem uma conta? Crie uma
-      </Text>
+        <TouchableOpacity
+          style={[styles.buttonAmarelo, (!email.trim() || !senha) && { opacity: 0.5 }]}
+          onPress={handleLogin}
+          disabled={!email.trim() || !senha || carregandoLogin}
+        >
+          {carregandoLogin ? (
+            <ActivityIndicator color="#000" />
+          ) : (
+            <Text style={styles.buttonTextPreto}>Entrar</Text>
+          )}
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.buttonBorda}
-        onPress={() => navigation.navigate("Cadastro")}
-      >
-        <Text style={styles.buttonTextBorda}>Criar conta</Text>
-      </TouchableOpacity>
-    </View>
+        <View style={styles.divisao}>
+          <View style={styles.linha} />
+          <Text>Ou</Text>
+          <View style={styles.linha} />
+        </View>
+
+        <Text style={{ textAlign: "center", marginBottom: 8 }}>
+          Não tem uma conta? Crie uma
+        </Text>
+
+        <TouchableOpacity
+          style={styles.buttonBorda}
+          onPress={() => navigation.navigate("Cadastro")}
+        >
+          <Text style={styles.buttonTextBorda}>Criar conta</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+  container: { flexGrow: 1, padding: 20, backgroundColor: "#fff" },
   logo: {
     width: 150,
     height: 150,
@@ -145,22 +162,26 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     marginTop: -18,
   },
+  inputWrapper: {
+    position: "relative",
+  },
   input: {
     borderWidth: 1,
     borderColor: "#999",
     borderRadius: 8,
     padding: 12,
     marginBottom: 20,
+    marginTop: 4,
   },
   inputSenha: {
     paddingRight: 54,
   },
   textEmail: { marginLeft: 8, marginBottom: 4 },
-  textSenha: { marginLeft: 8, marginBottom: 4 },
+  textSenha: { marginLeft: 8, marginBottom: 4, marginTop: 8 },
   iconEye: {
     position: "absolute",
-    top: "52.5%",
-    marginLeft: "93%",
+    right: 16,
+    top: 46,
   },
   esqueciSenha: {
     color: "blue",
@@ -168,7 +189,7 @@ const styles = StyleSheet.create({
     marginBottom: 42,
     textDecorationLine: "underline",
     marginTop: -10,
-    width: 140,
+    width: 160,
   },
   buttonAmarelo: {
     backgroundColor: "#FFc72c",
