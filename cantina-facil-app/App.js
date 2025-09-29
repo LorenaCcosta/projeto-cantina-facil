@@ -30,7 +30,6 @@ export default function App() {
       <NavigationContainer>
         <SafeAreaView style={{ flex: 1 }} edges={["top", "right", "left", "bottom"]}>
           <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
-            {/* Auth */}
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Cadastro" component={CadastroScreen} />
             <Stack.Screen name="RecuperarSenha" component={RecuperarSenhaScreen} />
