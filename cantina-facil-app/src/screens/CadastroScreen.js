@@ -198,10 +198,10 @@ export default function CadastroScreen() {
         <TouchableOpacity
           style={[
             styles.button,
-            (!email.trim() || !senha || confirmarSenha != senha || !aceito) && { opacity: 0.5 },
+            (!email.trim() || !senha || !aceito) && { opacity: 0.5 },
           ]}
           onPress={handleCadastrar}
-          disabled={!email.trim() || !senha || carregandoCadastro}
+          disabled={!email.trim() || !senha || carregandoCadastro || !aceito }
         >
           {carregandoCadastro ? (
             <ActivityIndicator color="#000" />
@@ -215,7 +215,6 @@ export default function CadastroScreen() {
 }
 
 const styles = StyleSheet.create({
-  // Usar flexGrow para o contentContainer do ScrollView
   container: { flexGrow: 1, padding: 20, backgroundColor: "#fff" },
   titulo: {
     fontSize: 28,
@@ -238,11 +237,11 @@ const styles = StyleSheet.create({
     padding: 12,
     marginTop: 20,
   },
-  // Ícone absoluto relative ao wrapper, evita % que quebram no ScrollView
+ 
   iconEye: {
     position: "absolute",
     right: 16,
-    top: 56, // alinhado ao input com marginTop 20 + padding
+    top: 56,
   },
   erro: {
     color: "red",

@@ -3,8 +3,6 @@ import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
-
-// Se você alterar a altura lá no AppTabs, atualize aqui também:
 const TAB_BAR_HEIGHT = 60;
 
 export default function FloatingCartButton() {
@@ -12,9 +10,7 @@ export default function FloatingCartButton() {
   const insets = useSafeAreaInsets();
   const route = useRoute();
 
-  // Heurística simples: quando estamos dentro das Tabs, o nome da rota raiz costuma ser "Tabs"
-  // e as rotas internas têm nomes das telas de aba ("Início", "Busca" ...).
-  // Se preferir algo 100% explícito, passe uma prop pelo withCartFab.
+ 
   const isInsideTabs =
     route?.name === "Tabs" ||
     route?.name === "Início" ||
@@ -43,7 +39,6 @@ const styles = StyleSheet.create({
   fab: {
     position: "absolute",
     right: 16,
-    // bottom definido dinamicamente
     backgroundColor: "#FFA600",
     borderRadius: 50,
     height: 56,

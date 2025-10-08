@@ -100,7 +100,6 @@ export default function HomeScreen({ navigation }) {
             </TouchableOpacity>
           </View>
 
-          {/* Agora o sino navega para a tela de Notificações */}
           <TouchableOpacity onPress={() => navigation.navigate("Notificacoes")}>
             <NotificationBell count={2} />
           </TouchableOpacity>
