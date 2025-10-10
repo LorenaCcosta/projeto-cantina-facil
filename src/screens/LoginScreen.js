@@ -13,7 +13,7 @@ import {
   Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { loginUsuario } from "../../firebase/auth/authService";
+import { loginUsuario } from "../config/auth/authService";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default function LoginScreen() {

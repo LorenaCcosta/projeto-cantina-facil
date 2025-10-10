@@ -3,14 +3,16 @@ import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { useCart } from "./CartContext";
+
 const TAB_BAR_HEIGHT = 60;
 
 export default function FloatingCartButton() {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const route = useRoute();
+  const { count } = useCart();
 
- 
   const isInsideTabs =
     route?.name === "Tabs" ||
     route?.name === "Início" ||
@@ -22,6 +24,8 @@ export default function FloatingCartButton() {
   const extraBottom = isInsideTabs ? TAB_BAR_HEIGHT : 0;
   const bottom = insets.bottom + extraBottom + 16;
 
+  if (count === 0) return null;
+
   return (
     <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
       <TouchableOpacity
@@ -30,6 +34,11 @@ export default function FloatingCartButton() {
         style={[styles.fab, { bottom }]}
       >
         <Ionicons name="cart" size={30} color="#fff" />
+        {count > 0 && (
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{count > 99 ? "99+" : count}</Text>
+          </View>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -53,8 +62,23 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
   },
-  fabText: {
+  badge: {
+    position: "absolute",
+    top: -4,
+    right: -4,
+    backgroundColor: "#D32F2F",
+    borderRadius: 12,
+    minWidth: 24,
+    height: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 6,
+    borderWidth: 2,
+    borderColor: "#fff",
+  },
+  badgeText: {
+    color: "#fff",
+    fontSize: 12,
     fontWeight: "700",
-    color: "#000",
   },
 });

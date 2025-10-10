@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { recuperarSenha } from "../../firebase/auth/authService";
+import { recuperarSenha } from "../config/auth/authService";
 
 import SetaVoltar from "../components/SetaVoltar";
 
@@ -82,7 +82,7 @@ export default function RecuperarSenha() {
         {carregando ? (
           <ActivityIndicator color="#000" />
         ) : (
-          <Text style={styles.textoButton}>Entrar</Text>
+          <Text style={styles.textoButton}>Recuperar Senha</Text>
         )}
       </TouchableOpacity>
     </View>
