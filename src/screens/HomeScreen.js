@@ -12,7 +12,7 @@ import {
   Dimensions,
 } from "react-native";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
-import { db, auth } from "../../firebase/firebaseConfig";
+import { db, auth } from "../config/firebaseConfig";
 import { Ionicons } from "@expo/vector-icons";
 
 import NotificationBell from "../components/NotificationBell";
@@ -202,7 +202,6 @@ const s = StyleSheet.create({
     alignItems: "center",
     gap: 4,
     marginTop: 2,
-    marginLeft: 122,
     marginBottom: 14,
   },
   cantinaNome: { fontWeight: "700", color: "#444444ff", fontSize: 16 },

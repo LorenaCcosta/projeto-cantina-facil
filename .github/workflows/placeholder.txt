@@ -1,0 +1,2 @@
+Este diretorio pode ser usado para CI/CD com GitHub Actions no futuro.
+

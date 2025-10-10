@@ -13,7 +13,7 @@ import {
   Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { cadastrarUsuario } from "../../firebase/auth/authService";
+import { cadastrarUsuario } from "../config/auth/authService";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 import SetaVoltar from "../components/SetaVoltar";
